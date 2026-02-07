@@ -661,19 +661,15 @@
 
     <section id="kontakt" class="reveal">
         <h2>Direkte Anfrage</h2>
-        <form action="https://api.web3forms.com/submit" method="POST">
-            <input type="hidden" name="access_key" value="DEIN_ACCESS_KEY_HIER">
-            <input type="hidden" name="subject" value="Neue Anfrage über dalaa-deluxe.de">
-            <input type="hidden" name="redirect" value="https://web3forms.com/success">
-
+        <form action="mailto:deluxedalaa@gmail.com" method="post" enctype="text/plain">
             <label for="name">Ihr Name</label>
-            <input id="name" name="name" type="text" placeholder="Max Mustermann" required>
+            <input id="name" type="text" placeholder="Max Mustermann" required>
 
             <label for="email">Ihre E-Mail</label>
-            <input id="email" name="email" type="email" placeholder="name@email.de" required>
+            <input id="email" type="email" placeholder="name@email.de" required>
 
             <label for="message">Ihre Nachricht</label>
-            <textarea id="message" name="message" placeholder="Wunschdatum, Stil, Budget ..." required></textarea>
+            <textarea id="message" placeholder="Wunschdatum, Stil, Budget ..." required></textarea>
 
             <button type="submit">Absenden</button>
         </form>
