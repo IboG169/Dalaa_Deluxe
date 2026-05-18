@@ -1,0 +1,1655 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<title>Yawm Arafah · Editorial Carousel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;0,9..144,900;1,9..144,800&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B0814;
+    --ink-2:#16102E;
+    --night:#1F1840;
+    --burgundy:#5C2B3D;
+    --rust:#8C4536;
+    --sunset:#C97A48;
+    --peach:#E8A266;
+    --gold:#E8A020;
+    --gold-soft:#F1C46A;
+    --gold-deep:#9E7415;
+    --gold-pale:#FFE6A8;
+    --emerald:#1B6B4A;
+    --emerald-deep:#0E3D2A;
+    --emerald-bright:#28A06E;
+    --alarm:#E84A2C;
+    --alarm-deep:#9C2D14;
+    --cream:#F5E9D0;
+    --paper:#FFFDF4;
+    --line-warm:rgba(232,160,32,.22);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;height:100%}
+  body{
+    background:
+      radial-gradient(1200px 600px at 50% -10%, #B8C8D8, transparent 60%),
+      linear-gradient(180deg,#E0CFA8 0%, #C4A878 100%);
+    font-family:"Inter","Helvetica Neue",system-ui,sans-serif;
+    color:var(--cream);
+    min-height:100vh;
+    display:flex;align-items:flex-start;justify-content:center;
+    padding:24px 16px 40px;
+  }
+  .mono{font-family:"JetBrains Mono",ui-monospace,monospace;letter-spacing:.02em}
+
+  /* ============= STAGE ============= */
+  .stage{
+    width:540px;
+    display:flex;flex-direction:column;align-items:center;gap:18px;
+  }
+  .frame{
+    width:540px;height:675px;
+    border-radius:28px;
+    background:var(--ink);
+    overflow:hidden;
+    position:relative;
+    box-shadow:
+      0 40px 80px -28px rgba(0,0,0,.6),
+      0 14px 28px -14px rgba(0,0,0,.45),
+      inset 0 0 0 1px rgba(255,253,247,.08);
+  }
+  .track{
+    width:2700px; height:675px;
+    display:flex;
+    transition: transform .6s cubic-bezier(.22,1,.36,1);
+    will-change: transform;
+  }
+  .slide{
+    width:540px;height:675px;
+    position:relative;
+    isolation:isolate;
+    color:var(--cream);
+    overflow:hidden;
+  }
+
+  /* ============= SHARED ============= */
+  .pad{ padding:30px 32px; height:100%; display:flex; flex-direction:column; position:relative; z-index:2;}
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    font-size:10.5px; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--gold-pale); font-weight:700;
+  }
+  .topbar .brand{ display:inline-flex;align-items:center;gap:8px }
+  .topbar .brand .crest{
+    width:14px;height:14px;border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, var(--gold-soft), var(--gold) 60%, var(--rust) 100%);
+    box-shadow: inset 0 0 0 1.5px rgba(255,253,247,.55);
+  }
+  .topbar .handle{
+    display:inline-flex;align-items:center;gap:6px;
+    background:rgba(255,253,247,.08);
+    border:1px solid rgba(255,253,247,.16);
+    padding:4px 10px;border-radius:999px;
+    font-size:10px; letter-spacing:.04em; text-transform:none;
+    color:#FFF6E0; font-weight:500;
+  }
+  .topbar .handle .dot{width:5px;height:5px;border-radius:999px;background:var(--gold)}
+
+  .pagepill{
+    position:absolute; right:22px; bottom:20px;
+    font-size:10px;letter-spacing:.20em;color:var(--gold-pale);
+    background:rgba(11,8,32,.50);
+    border:1px solid rgba(255,253,247,.16);
+    padding:4px 9px;border-radius:999px;
+    font-weight:700;
+    z-index:3;
+  }
+
+  /* Islamic geometry — 8-point star pattern background */
+  .geo-bg{
+    position:absolute; inset:0;
+    background-image:
+      radial-gradient(circle at center, rgba(232,160,32,.05) 1px, transparent 1.5px),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'><g fill='none' stroke='%23E8A020' stroke-width='0.7' opacity='0.10'><polygon points='40,8 47,28 67,28 51,42 57,62 40,52 23,62 29,42 13,28 33,28'/><polygon points='0,40 8,32 0,24 8,32 0,40 8,48'/><polygon points='80,40 72,32 80,24 72,32 80,40 72,48'/></g></svg>");
+    background-size: auto, 80px 80px;
+    opacity:.55;
+    pointer-events:none;
+    z-index:1;
+  }
+
+  /* Mount Arafat scene (v7) — full-bleed bg under content */
+  .arafat-bg{
+    position:absolute; inset:0; width:100%; height:100%;
+    display:block;
+    z-index:0; pointer-events:none;
+  }
+  /* Per-slide scrim sits ABOVE scene, BELOW content */
+  .slide-scrim{
+    position:absolute; inset:0;
+    z-index:1; pointer-events:none;
+  }
+
+  /* Arabic watermark big behind content */
+  .ar-wm{
+    position:absolute; pointer-events:none;
+    font-family:"Amiri",serif; direction:rtl;
+    color:rgba(232,160,32,.05);
+    font-weight:700;
+    line-height:1;
+    z-index:0;
+    user-select:none;
+  }
+
+  /* ============= SLIDE 1: COVER ============= */
+  .s1{ background: transparent; }
+  .s1 .slide-scrim{
+    background:
+      radial-gradient(700px 320px at 50% -10%, rgba(232,74,44,.20), transparent 65%),
+      linear-gradient(180deg, rgba(255,253,244,.05) 0%, transparent 35%, transparent 70%, rgba(31,18,8,.18) 100%);
+  }
+  .s1 .ar-wm{
+    top:138px; left:50%;
+    transform:translateX(-50%);
+    font-size:280px;
+    color:rgba(232,160,32,.07);
+  }
+
+  .s1-alarm{
+    margin-top:14px;
+    display:flex; align-items:center; gap:10px;
+    align-self:flex-start;
+    padding:7px 14px 7px 8px;
+    background:linear-gradient(90deg, var(--alarm) 0%, var(--alarm-deep) 100%);
+    color:#FFFDF4;
+    border-radius:999px;
+    font-size:10.5px; letter-spacing:.24em; text-transform:uppercase;
+    font-weight:800;
+    box-shadow:0 6px 20px -6px rgba(232,74,44,.55), inset 0 0 0 1px rgba(255,253,247,.20);
+    animation: blink 2.2s ease-in-out infinite;
+  }
+  @keyframes blink{
+    0%,100%{ filter:brightness(1) }
+    50%{ filter:brightness(1.25) }
+  }
+  .s1-alarm .ico{
+    width:20px;height:20px;border-radius:999px;
+    background:#FFFDF4; color:var(--alarm-deep);
+    display:grid;place-items:center; font-weight:900;
+    font-size:13px; line-height:1;
+  }
+
+  .s1-hero{
+    flex:1; display:flex; flex-direction:column; justify-content:center;
+    align-items:center; text-align:center;
+    margin-top:6px;
+  }
+  .s1-stamp{
+    font-size:10px; letter-spacing:.4em; text-transform:uppercase;
+    color:var(--gold); font-weight:800;
+    margin-bottom:14px;
+    display:inline-flex; align-items:center; gap:12px;
+  }
+  .s1-stamp::before,.s1-stamp::after{
+    content:""; width:32px; height:1px; background:var(--gold); opacity:.7;
+  }
+  .s1-big-26{
+    font-family:"Fraunces",serif;
+    font-weight:900;
+    font-size:200px;
+    line-height:.78;
+    letter-spacing:-.06em;
+    color:transparent;
+    -webkit-text-stroke: 0;
+    background:linear-gradient(180deg, #FFE6A8 0%, var(--gold) 40%, var(--gold-deep) 100%);
+    -webkit-background-clip:text; background-clip:text;
+    margin:0;
+    text-shadow:0 8px 30px rgba(232,160,32,.30);
+    position:relative;
+  }
+  .s1-big-26::after{
+    content:"·"; position:absolute;
+    color:var(--gold); -webkit-text-fill-color:var(--gold);
+    font-size:90px; right:-6px; top:0; line-height:.78;
+  }
+  .s1-monthrow{
+    display:flex; align-items:center; gap:14px;
+    margin-top:6px;
+    font-family:"Inter",sans-serif;
+    font-size:14px; font-weight:800;
+    letter-spacing:.32em; text-transform:uppercase;
+    color:#FFFDF4;
+  }
+  .s1-monthrow .rule{ width:38px; height:1px; background:rgba(255,253,247,.35) }
+  .s1-monthrow .ar{
+    font-family:"Amiri",serif; font-style:italic;
+    color:var(--gold-soft); font-size:18px; letter-spacing:0;
+    font-weight:700;
+  }
+
+  .s1-title{
+    font-family:"Fraunces",serif;
+    font-weight:900; font-style:italic;
+    font-size:54px; line-height:.95;
+    letter-spacing:-.025em;
+    color:#FFFDF4;
+    margin:18px 0 4px;
+    text-wrap:balance;
+    text-shadow:0 4px 16px rgba(0,0,0,.55);
+  }
+  .s1-title .acc{ color:var(--gold-soft); }
+  .s1-sub{
+    font-size:13.5px; line-height:1.4;
+    color:var(--gold-pale);
+    font-weight:500; letter-spacing:.04em;
+    max-width:380px;
+  }
+
+  .s1-footer{
+    margin-top:auto;
+    display:flex; align-items:stretch; gap:10px;
+  }
+  .s1-window{
+    flex:1;
+    display:flex; align-items:center; gap:12px;
+    background:rgba(11,8,32,.55);
+    border:1px solid rgba(232,160,32,.45);
+    border-radius:14px;
+    padding:10px 14px;
+  }
+  .s1-window .ico{
+    width:34px;height:34px;border-radius:9px;
+    background:linear-gradient(135deg, var(--emerald-bright), var(--emerald-deep));
+    color:#FFFDF4; flex-shrink:0;
+    display:grid;place-items:center;
+  }
+  .s1-window .meta{ display:flex; flex-direction:column; line-height:1.2; gap:1px;}
+  .s1-window .lbl{ font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);font-weight:800}
+  .s1-window .val{ font-size:14px; font-weight:800; color:#FFFDF4; letter-spacing:-.01em }
+  .s1-swipe{
+    flex-shrink:0;
+    background:linear-gradient(135deg, var(--gold) 0%, var(--gold-deep) 100%);
+    color:var(--ink);
+    border-radius:14px;
+    padding:0 14px;
+    display:flex; align-items:center; gap:8px;
+    font-size:10.5px; font-weight:800; letter-spacing:.24em; text-transform:uppercase;
+    box-shadow:0 8px 20px -8px rgba(232,160,32,.6);
+  }
+  .s1-swipe svg{ animation: nudge 1.4s ease-in-out infinite }
+  @keyframes nudge{
+    0%,100%{ transform:translateX(0) }
+    50%{ transform:translateX(5px) }
+  }
+
+  /* ============= SLIDE 2: BESTE DUA ============= */
+  .s2{ background: transparent; }
+  .s2 .slide-scrim{
+    background:
+      radial-gradient(900px 500px at 50% -10%, rgba(232,160,32,.18), transparent 50%),
+      linear-gradient(180deg, rgba(255,253,244,.08) 0%, transparent 40%, transparent 70%, rgba(31,18,8,.20) 100%);
+  }
+  .s2 .ar-wm{
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    font-size:320px;
+    color:rgba(232,160,32,.08);
+  }
+
+  /* Sky rays radiating from top */
+  .rays{
+    position:absolute; top:-200px; left:50%; transform:translateX(-50%);
+    width:800px; height:520px; pointer-events:none;
+    z-index:1;
+    background:
+      conic-gradient(from 180deg at 50% 100%,
+        transparent 0deg,
+        rgba(255,230,168,.0) 70deg,
+        rgba(255,230,168,.18) 85deg,
+        rgba(255,230,168,.05) 90deg,
+        rgba(255,230,168,.20) 95deg,
+        rgba(255,230,168,.05) 100deg,
+        rgba(255,230,168,.16) 105deg,
+        rgba(255,230,168,.0) 120deg,
+        transparent 360deg);
+    mix-blend-mode:screen;
+    opacity:.85;
+  }
+
+  .s2-eyebrow{
+    margin-top:14px;
+    align-self:flex-start;
+    font-size:10px; letter-spacing:.32em; text-transform:uppercase;
+    color:var(--gold); font-weight:800;
+    display:inline-flex; align-items:center; gap:10px;
+  }
+  .s2-eyebrow::before{content:""; width:22px; height:1px; background:var(--gold)}
+
+  .s2-title{
+    margin:10px 0 4px;
+    font-family:"Fraunces",serif;
+    font-weight:900;
+    font-size:64px;
+    line-height:.92;
+    letter-spacing:-.028em;
+    color:#FFFDF4;
+    text-wrap:balance;
+    text-shadow:0 4px 18px rgba(0,0,0,.5);
+  }
+  .s2-title .em{
+    font-style:italic; color:var(--gold-soft);
+    font-weight:900;
+  }
+  .s2-kicker{
+    font-size:13px; color:var(--gold-pale); line-height:1.45;
+    max-width:430px; font-weight:500;
+  }
+  .s2-kicker b{ color:#FFFDF4; font-weight:700 }
+
+  .s2-hadith{
+    margin-top:auto;
+    background:rgba(255,253,244,.96);
+    border-radius:20px;
+    padding:20px 22px;
+    color:var(--ink);
+    box-shadow:0 18px 40px -16px rgba(0,0,0,.6);
+    position:relative;
+    overflow:hidden;
+  }
+  .s2-hadith::before{
+    content:""; position:absolute; top:0; left:0; right:0; height:4px;
+    background:linear-gradient(90deg, var(--gold) 0%, var(--gold-deep) 50%, var(--emerald) 100%);
+  }
+  .s2-hadith .lbl{
+    font-size:9.5px; letter-spacing:.28em; text-transform:uppercase;
+    color:var(--rust); font-weight:800;
+    margin-bottom:8px;
+  }
+  .s2-hadith .ar{
+    font-family:"Amiri",serif; direction:rtl; text-align:right;
+    font-size:22px; line-height:1.6;
+    color:var(--emerald-deep); font-weight:700;
+    margin-bottom:8px;
+  }
+  .s2-hadith .de{
+    font-family:"Fraunces",serif;
+    font-style:italic;
+    font-size:18px; line-height:1.4;
+    color:var(--ink); font-weight:600;
+    text-wrap:pretty;
+  }
+  .s2-hadith .src{
+    margin-top:10px;
+    font-size:10.5px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--gold-deep); font-weight:800;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .s2-hadith .src .by{ color:#5C4A33 }
+
+  .s2-tip{
+    margin-top:12px;
+    background:linear-gradient(135deg, rgba(27,107,74,.85), rgba(14,61,42,.92));
+    border:1px solid rgba(232,160,32,.45);
+    border-radius:12px;
+    padding:10px 14px;
+    display:flex; align-items:center; gap:12px;
+    color:#FFF6E0;
+  }
+  .s2-tip .clk{
+    flex-shrink:0;
+    width:32px;height:32px;border-radius:8px;
+    background:rgba(232,160,32,.20);
+    border:1px solid rgba(232,160,32,.55);
+    display:grid;place-items:center;
+    color:var(--gold-soft);
+  }
+  .s2-tip .txt{ font-size:12px; line-height:1.4; font-weight:500 }
+  .s2-tip .txt b{ color:#FFFDF4; font-weight:800 }
+
+  /* ============= SLIDE 3: TWO YEARS ============= */
+  .s3{ background: transparent; }
+  .s3 .slide-scrim{
+    background:
+      radial-gradient(700px 400px at 50% 100%, rgba(27,107,74,.20), transparent 60%),
+      linear-gradient(180deg, rgba(255,253,244,.08) 0%, transparent 40%, transparent 70%, rgba(31,18,8,.15) 100%);
+  }
+  .s3 .ar-wm{
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    font-size:380px;
+    color:rgba(232,160,32,.07);
+    font-style:italic;
+  }
+
+  .s3-eyebrow{
+    margin-top:14px;
+    align-self:flex-start;
+    font-size:10px; letter-spacing:.32em; text-transform:uppercase;
+    color:var(--gold); font-weight:800;
+    display:inline-flex; align-items:center; gap:10px;
+  }
+  .s3-eyebrow::before{content:""; width:22px; height:1px; background:var(--gold)}
+
+  .s3-title{
+    margin:8px 0 16px;
+    font-family:"Fraunces",serif;
+    font-weight:900;
+    font-size:42px;
+    line-height:.98;
+    letter-spacing:-.025em;
+    color:#FFFDF4;
+    text-wrap:balance;
+    text-shadow:0 4px 14px rgba(0,0,0,.5);
+  }
+  .s3-title .em{
+    font-style:italic;
+    color:var(--gold-soft);
+  }
+
+  .timeline{
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:stretch;
+    gap:10px;
+    margin-bottom:14px;
+  }
+  .year-block{
+    background:rgba(255,253,244,.06);
+    border:1px dashed rgba(232,160,32,.40);
+    border-radius:16px;
+    padding:14px 12px 12px;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+  .year-block .yr-lbl{
+    font-size:9.5px; letter-spacing:.28em; text-transform:uppercase;
+    color:var(--gold); font-weight:800;
+    margin-bottom:4px;
+  }
+  .year-block .yr-num{
+    font-family:"Fraunces",serif; font-weight:900;
+    font-size:46px; color:var(--gold-pale);
+    letter-spacing:-.03em; line-height:1;
+    position:relative; display:inline-block;
+  }
+  .year-block .yr-sub{
+    margin-top:4px;
+    font-size:10.5px; color:var(--gold-pale); opacity:.75;
+    font-weight:500;
+  }
+  .year-block .strike{
+    position:absolute; left:14%; right:14%; top:50%;
+    height:3px; background:var(--alarm);
+    transform:rotate(-7deg);
+    box-shadow:0 0 12px rgba(232,74,44,.6);
+    border-radius:2px;
+  }
+  .year-block.future .strike{ transform:rotate(7deg); }
+  .year-pivot{
+    width:64px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    background:linear-gradient(180deg, var(--gold) 0%, var(--gold-deep) 100%);
+    border-radius:16px;
+    color:var(--ink);
+    box-shadow:0 12px 24px -10px rgba(232,160,32,.6);
+    padding:8px 0;
+    position:relative;
+  }
+  .year-pivot::before{
+    content:""; position:absolute;
+    left:-20px; right:-20px; top:50%; height:1px;
+    background:repeating-linear-gradient(90deg, rgba(232,160,32,.7) 0 4px, transparent 4px 8px);
+    z-index:-1;
+  }
+  .year-pivot .ar{
+    font-family:"Amiri",serif; font-size:30px; font-weight:700; line-height:1;
+  }
+  .year-pivot .nm{
+    font-size:8.5px; letter-spacing:.22em; text-transform:uppercase;
+    font-weight:800; margin-top:2px;
+  }
+
+  .hero-num{
+    background:linear-gradient(135deg, rgba(27,107,74,.20), rgba(232,160,32,.10));
+    border:1px solid rgba(232,160,32,.40);
+    border-radius:18px;
+    padding:14px 18px;
+    display:flex; align-items:center; gap:18px;
+    margin-bottom:12px;
+    overflow:hidden;
+    position:relative;
+  }
+  .hero-num .neg{
+    font-family:"Fraunces",serif; font-weight:900; font-style:italic;
+    font-size:88px; line-height:.85;
+    color:transparent;
+    background:linear-gradient(180deg, #FFE6A8 0%, var(--gold) 50%, var(--gold-deep) 100%);
+    -webkit-background-clip:text; background-clip:text;
+    letter-spacing:-.05em;
+    flex-shrink:0;
+  }
+  .hero-num .meta{
+    display:flex; flex-direction:column; gap:3px;
+  }
+  .hero-num .top{
+    font-size:11px; letter-spacing:.26em; text-transform:uppercase;
+    color:var(--gold); font-weight:800;
+  }
+  .hero-num .big{
+    font-family:"Fraunces",serif; font-weight:800;
+    font-size:24px; line-height:1.05; color:#FFFDF4;
+    letter-spacing:-.015em;
+  }
+  .hero-num .small{
+    font-size:12px; color:var(--gold-pale);
+    line-height:1.35;
+  }
+
+  .s3-hadith{
+    margin-top:auto;
+    background:rgba(255,253,244,.96);
+    border-radius:18px;
+    padding:16px 18px 14px;
+    color:var(--ink);
+    box-shadow:0 14px 30px -14px rgba(0,0,0,.55);
+  }
+  .s3-hadith .ar{
+    font-family:"Amiri",serif; direction:rtl; text-align:right;
+    font-size:18px; line-height:1.65;
+    color:var(--emerald-deep); font-weight:700;
+    margin-bottom:6px;
+  }
+  .s3-hadith .de{
+    font-size:13px; line-height:1.5; color:var(--ink); font-weight:500;
+  }
+  .s3-hadith .de b{ color:var(--emerald-deep); font-weight:800 }
+  .s3-hadith .src{
+    margin-top:8px;
+    font-size:9.5px; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--rust); font-weight:800;
+  }
+
+  /* ============= SLIDE 4: ACTION PLAN ============= */
+  .s4{ background: transparent; }
+  .s4 .slide-scrim{
+    background:
+      radial-gradient(700px 400px at 100% 0%, rgba(27,107,74,.15), transparent 50%),
+      linear-gradient(180deg, rgba(255,253,244,.06) 0%, transparent 50%, rgba(31,18,8,.20) 100%);
+  }
+  .s4 .ar-wm{
+    top:200px; right:-40px;
+    font-size:260px;
+    color:rgba(232,160,32,.05);
+  }
+
+  .s4-eyebrow{
+    margin-top:14px;
+    align-self:flex-start;
+    font-size:10px; letter-spacing:.32em; text-transform:uppercase;
+    color:var(--gold); font-weight:800;
+    display:inline-flex; align-items:center; gap:10px;
+  }
+  .s4-eyebrow::before{content:""; width:22px; height:1px; background:var(--gold)}
+
+  .s4-title{
+    margin:8px 0 4px;
+    font-family:"Fraunces",serif;
+    font-weight:900;
+    font-size:42px;
+    line-height:.98;
+    letter-spacing:-.025em;
+    color:#FFFDF4;
+    text-shadow:0 4px 14px rgba(0,0,0,.5);
+  }
+  .s4-title .em{
+    font-style:italic; color:var(--gold-soft);
+  }
+  .s4-sub{
+    font-size:12.5px; color:var(--gold-pale); line-height:1.4;
+    margin-bottom:14px; font-weight:500;
+    max-width:400px;
+  }
+
+  /* Timeline rail with checklist */
+  .plan{
+    flex:1;
+    display:flex; flex-direction:column; gap:8px;
+    position:relative;
+  }
+  .plan-item{
+    appearance:none; cursor:pointer; width:100%; text-align:left;
+    background:rgba(255,253,244,.04);
+    border:1px solid rgba(232,160,32,.18);
+    border-left:3px solid var(--gold-deep);
+    border-radius:0 12px 12px 0;
+    padding:11px 14px 11px 14px;
+    display:grid;
+    grid-template-columns:60px 24px 1fr;
+    align-items:center;
+    gap:12px;
+    color:var(--gold-pale);
+    font-family:inherit;
+    transition:all .25s ease;
+  }
+  .plan-item:hover{
+    background:rgba(255,253,244,.08);
+    border-left-color:var(--gold);
+  }
+  .plan-item.done{
+    background:linear-gradient(90deg, rgba(27,107,74,.30), rgba(27,107,74,.05));
+    border-left-color:var(--emerald-bright);
+  }
+  .plan-item .time{
+    font-family:"JetBrains Mono",monospace;
+    font-size:11px; font-weight:700;
+    color:var(--gold); letter-spacing:.02em;
+    line-height:1.15;
+    display:flex; flex-direction:column; gap:1px;
+    text-align:right;
+    padding-right:4px;
+    border-right:1px solid rgba(232,160,32,.30);
+  }
+  .plan-item .time .lbl{
+    font-size:8.5px; letter-spacing:.2em; text-transform:uppercase;
+    color:rgba(232,160,32,.7); font-weight:800;
+    font-family:"Inter",sans-serif;
+  }
+  .plan-item.done .time{ color:var(--emerald-bright); border-right-color:rgba(40,160,110,.4) }
+  .plan-item.done .time .lbl{ color:rgba(40,160,110,.7) }
+
+  .plan-item .check{
+    width:24px;height:24px;border-radius:6px;
+    border:2px solid rgba(232,160,32,.50);
+    display:grid;place-items:center;
+    background:rgba(11,8,32,.4);
+    transition:all .2s ease;
+  }
+  .plan-item .check svg{opacity:0;transform:scale(.5);transition:all .2s ease}
+  .plan-item.done .check{
+    background:var(--emerald-bright); border-color:var(--emerald-bright);
+  }
+  .plan-item.done .check svg{ opacity:1; transform:scale(1); color:#FFFDF4 }
+
+  .plan-item .meta{ display:flex; flex-direction:column; line-height:1.2; gap:2px; min-width:0; }
+  .plan-item .ttl{
+    font-family:"Fraunces",serif; font-weight:800;
+    font-size:16px; color:#FFFDF4;
+    letter-spacing:-.01em;
+  }
+  .plan-item.done .ttl{
+    text-decoration:line-through;
+    text-decoration-color:rgba(40,160,110,.5);
+    text-decoration-thickness:1.5px;
+    color:var(--gold-pale);
+  }
+  .plan-item .hint{
+    font-size:11px; color:rgba(245,233,208,.65); font-weight:500;
+  }
+
+  .plan-foot{
+    margin-top:6px;
+    font-family:"JetBrains Mono",monospace;
+    font-size:10px; letter-spacing:.12em;
+    color:var(--gold); text-align:center;
+    background:rgba(232,160,32,.10);
+    border:1px dashed rgba(232,160,32,.45);
+    border-radius:10px;
+    padding:7px 10px;
+  }
+  .plan-foot b{ color:#FFFDF4; font-weight:800 }
+
+  /* ============= SLIDE 5: CTA ============= */
+  .s5{ background: transparent; }
+  .s5 .slide-scrim{
+    background:
+      radial-gradient(800px 500px at 50% 110%, rgba(232,160,32,.20), transparent 50%),
+      linear-gradient(180deg, rgba(255,253,244,.08) 0%, transparent 40%, transparent 70%, rgba(31,18,8,.18) 100%);
+  }
+  .s5 .ar-wm{
+    top:48%; left:50%;
+    transform:translate(-50%,-50%);
+    font-size:340px;
+    color:rgba(232,160,32,.06);
+  }
+
+  .s5-eyebrow{
+    margin-top:14px;
+    align-self:flex-start;
+    font-size:10px; letter-spacing:.32em; text-transform:uppercase;
+    color:var(--gold); font-weight:800;
+    display:inline-flex; align-items:center; gap:10px;
+  }
+  .s5-eyebrow::before{content:""; width:22px; height:1px; background:var(--gold)}
+
+  .s5-title{
+    margin:6px 0 6px;
+    font-family:"Fraunces",serif;
+    font-weight:900;
+    font-size:44px;
+    line-height:.96;
+    letter-spacing:-.028em;
+    color:#FFFDF4;
+    text-wrap:balance;
+    text-shadow:0 4px 16px rgba(0,0,0,.5);
+  }
+  .s5-title .em{
+    font-style:italic; color:var(--gold-soft);
+  }
+  .s5-lede{
+    font-size:12.5px; color:var(--gold-pale); line-height:1.45;
+    margin:0 0 12px; font-weight:500;
+    max-width:420px;
+  }
+  .s5-lede b{ color:#FFFDF4; font-weight:700 }
+  .s5-lede i{ font-style:italic; color:var(--gold-soft); font-weight:600 }
+
+  .actions{
+    display:flex; flex-direction:column; gap:7px;
+  }
+  .action{
+    display:grid;
+    grid-template-columns:42px 22px 1fr auto;
+    align-items:center; gap:12px;
+    background:rgba(255,253,244,.96);
+    border-radius:12px;
+    padding:9px 14px 9px 12px;
+    color:var(--ink);
+    box-shadow:0 12px 26px -14px rgba(0,0,0,.55);
+    position:relative;
+    overflow:hidden;
+  }
+  .action::before{
+    content:""; position:absolute; left:0; top:0; bottom:0; width:4px;
+    background:var(--gold);
+  }
+  .action.save::before{ background:var(--emerald-bright) }
+  .action.share::before{ background:var(--gold) }
+  .action.comment::before{ background:var(--rust) }
+
+  .action .ico{
+    width:36px;height:36px;border-radius:10px;
+    display:grid;place-items:center;
+    flex-shrink:0;
+  }
+  .action.save .ico{
+    background:linear-gradient(135deg, var(--emerald-bright), var(--emerald-deep));
+    color:#FFFDF4;
+  }
+  .action.share .ico{
+    background:linear-gradient(135deg, var(--gold), var(--gold-deep));
+    color:var(--ink);
+  }
+  .action.comment .ico{
+    background:linear-gradient(135deg, var(--rust), var(--burgundy));
+    color:#FFFDF4;
+  }
+  .action .step{
+    font-family:"Fraunces",serif; font-weight:900; font-style:italic;
+    font-size:20px; color:var(--gold-deep);
+    text-align:center; line-height:1;
+  }
+  .action .meta{ display:flex; flex-direction:column; line-height:1.2; gap:2px; min-width:0;}
+  .action .lbl{
+    font-size:9.5px; letter-spacing:.24em; text-transform:uppercase;
+    color:var(--rust); font-weight:800;
+  }
+  .action .ttl{
+    font-family:"Fraunces",serif; font-weight:800;
+    font-size:14.5px; color:var(--ink); letter-spacing:-.01em;
+  }
+  .action .hint{ font-size:11px; color:#5C4A33; font-weight:500 }
+  .action .arrow{
+    width:28px;height:28px;border-radius:999px;
+    background:var(--ink);
+    color:var(--gold-soft);
+    display:grid;place-items:center;
+    flex-shrink:0;
+  }
+
+  .reward-stamp{
+    margin-top:10px;
+    background:linear-gradient(135deg, rgba(27,107,74,.88), rgba(14,61,42,.94));
+    border:1px solid rgba(232,160,32,.55);
+    border-radius:12px;
+    padding:10px 14px;
+    color:#FFF6E0;
+    display:flex; align-items:center; gap:12px;
+  }
+  .reward-stamp .star{
+    width:38px;height:38px;border-radius:10px;
+    background:rgba(232,160,32,.20);
+    border:1px solid rgba(232,160,32,.55);
+    color:var(--gold-soft);
+    display:grid;place-items:center;
+    flex-shrink:0;
+  }
+  .reward-stamp .txt{ font-size:11.5px; line-height:1.4; font-weight:500;}
+  .reward-stamp .txt b{ color:#FFFDF4; font-weight:800 }
+  .reward-stamp .txt i{
+    font-family:"Amiri",serif; font-style:italic; color:var(--gold-soft); font-weight:700;
+  }
+
+  /* ============= CONTROLS ============= */
+  .controls{
+    width:540px;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 4px;
+  }
+  .navbtn{
+    width:44px;height:44px;border-radius:999px;border:none;
+    background:#FFFDF7; color:var(--ink);
+    box-shadow:0 14px 32px -12px rgba(15,8,30,.55);
+    display:grid;place-items:center;
+    cursor:pointer;transition:transform .15s ease, opacity .2s ease;
+  }
+  .navbtn:hover{transform:translateY(-1px)}
+  .navbtn[disabled]{opacity:.35;cursor:not-allowed;transform:none}
+  .dots{display:flex;gap:7px;align-items:center}
+  .dot-btn{
+    width:8px;height:8px;border-radius:999px;border:none;cursor:pointer;
+    background:rgba(255,253,247,.30);transition:all .25s ease;padding:0;
+  }
+  .dot-btn.active{ width:22px;background:var(--gold); }
+  .helper{
+    width:540px;text-align:center;
+    font-size:11px;color:rgba(255,253,247,.55);
+    letter-spacing:.08em;
+  }
+  .helper kbd{
+    background:rgba(255,253,247,.10);border:1px solid rgba(255,253,247,.18);
+    border-radius:6px;padding:1px 6px;font-family:inherit;font-size:10px;
+    color:#FAE8C2;
+  }
+
+  /* ============= V8 DESERT-DAY OVERRIDES ============= */
+  :root{
+    --day-ink:#1F0F08;
+    --day-ink-2:#3A2418;
+    --day-ink-soft:#5C4030;
+    --day-sand:#E8D2A4;
+    --day-cream:#FBF1D8;
+    --day-sky:#7DA8D0;
+    --day-gold:#7C5210;
+    --day-rust:#8C3520;
+  }
+  .frame{
+    background:#7DA8D0;
+    box-shadow:
+      0 40px 80px -28px rgba(58,36,24,.45),
+      0 14px 28px -14px rgba(58,36,24,.35),
+      inset 0 0 0 1px rgba(31,15,8,.08);
+  }
+  .slide{ color:var(--day-ink); }
+
+  /* Topbar — dark on light */
+  .topbar{ color:rgba(31,15,8,.78); }
+  .topbar .brand .crest{
+    background:radial-gradient(circle at 30% 30%, #F1C46A, var(--gold) 60%, var(--day-rust) 100%);
+    box-shadow: inset 0 0 0 1.5px rgba(255,253,247,.55);
+  }
+  .topbar .handle{
+    background:rgba(255,253,247,.65);
+    border-color:rgba(31,15,8,.15);
+    color:var(--day-ink);
+    backdrop-filter:blur(6px);
+  }
+  .topbar .handle .dot{ background:var(--day-rust); }
+
+  .pagepill{
+    color:var(--day-ink); background:rgba(255,253,247,.78);
+    border-color:rgba(31,15,8,.15);
+  }
+
+  .ar-wm{ color:rgba(31,15,8,.06); }
+
+  /* === Slide 1 === */
+  .s1-alarm{
+    /* keep red but slightly more saturated */
+    box-shadow:0 6px 20px -4px rgba(232,74,44,.55), inset 0 0 0 1px rgba(255,253,247,.30);
+  }
+  .s1-stamp{ color:var(--day-gold); }
+  .s1-stamp::before,.s1-stamp::after{ background:var(--day-gold); opacity:.85; }
+  .s1-big-26{
+    background:linear-gradient(180deg, #F1C46A 0%, var(--gold) 35%, #7C5210 100%);
+    -webkit-background-clip:text; background-clip:text;
+    text-shadow:0 4px 18px rgba(255,253,244,.35);
+  }
+  .s1-big-26::after{
+    color:var(--day-gold);
+    -webkit-text-fill-color:var(--day-gold);
+  }
+  .s1-monthrow{ color:var(--day-ink); }
+  .s1-monthrow .rule{ background:rgba(31,15,8,.30); }
+  .s1-monthrow .ar{ color:var(--day-gold); }
+  .s1-title{ color:var(--day-ink); text-shadow:0 1px 2px rgba(255,253,244,.45); }
+  .s1-title .acc{ color:var(--day-gold); }
+  .s1-sub{ color:rgba(31,15,8,.80); text-shadow:none; }
+  .s1-sub b{ color:var(--day-ink); }
+  .s1-window{
+    background:rgba(255,253,244,.85);
+    border-color:rgba(31,15,8,.15);
+    backdrop-filter:blur(6px);
+  }
+  .s1-window .ico{
+    background:linear-gradient(135deg, #28A06E, #0E3D2A);
+    color:#FFFDF4;
+  }
+  .s1-window .lbl{ color:var(--day-gold); }
+  .s1-window .val{ color:var(--day-ink); }
+  .s1-swipe{
+    color:#FFFDF4;
+    background:linear-gradient(135deg, var(--gold) 0%, #7C5210 100%);
+    box-shadow:0 8px 20px -8px rgba(158,107,20,.6);
+  }
+
+  /* === Slide 2 === */
+  .s2-eyebrow{ color:var(--day-gold); }
+  .s2-eyebrow::before{ background:var(--day-gold); }
+  .s2-title{ color:var(--day-ink); text-shadow:0 1px 2px rgba(255,253,244,.5); }
+  .s2-title .em{ color:var(--day-gold); }
+  .s2-kicker{ color:rgba(31,15,8,.78); }
+  .s2-kicker b{ color:var(--day-ink); }
+
+  .s2-hadith{
+    background:rgba(255,253,244,.96);
+    box-shadow:0 18px 40px -16px rgba(58,36,24,.40);
+  }
+  .s2-hadith .lbl{ color:var(--day-rust); }
+
+  .s2-tip{
+    background:linear-gradient(135deg, rgba(27,107,74,.92), rgba(14,61,42,.96));
+    border-color:rgba(232,160,32,.55);
+  }
+
+  /* Sky-rays adjusted for daytime — softer */
+  .rays{
+    background:
+      conic-gradient(from 180deg at 50% 100%,
+        transparent 0deg,
+        rgba(255,253,244,.0) 70deg,
+        rgba(255,253,244,.20) 85deg,
+        rgba(255,253,244,.05) 90deg,
+        rgba(255,253,244,.25) 95deg,
+        rgba(255,253,244,.05) 100deg,
+        rgba(255,253,244,.18) 105deg,
+        rgba(255,253,244,.0) 120deg,
+        transparent 360deg);
+    opacity:.55;
+  }
+
+  /* === Slide 3 === */
+  .s3-eyebrow{ color:var(--day-gold); }
+  .s3-eyebrow::before{ background:var(--day-gold); }
+  .s3-title{ color:var(--day-ink); text-shadow:0 1px 2px rgba(255,253,244,.5); }
+  .s3-title .em{ color:var(--day-gold); }
+  .year-block{
+    background:rgba(255,253,244,.70);
+    border-color:rgba(158,107,20,.55);
+    backdrop-filter:blur(6px);
+  }
+  .year-block .yr-lbl{ color:var(--day-rust); }
+  .year-block .yr-num{ color:var(--day-ink); opacity:1; }
+  .year-block .yr-sub{ color:rgba(31,15,8,.65); opacity:.9; }
+  .year-pivot{
+    background:linear-gradient(180deg, var(--gold) 0%, #7C5210 100%);
+    color:#FFFDF4;
+    box-shadow:0 12px 24px -10px rgba(158,107,20,.55);
+  }
+  .year-pivot::before{
+    background:repeating-linear-gradient(90deg, rgba(158,107,20,.7) 0 4px, transparent 4px 8px);
+  }
+
+  .hero-num{
+    background:linear-gradient(135deg, rgba(255,253,244,.65), rgba(232,160,32,.22));
+    border-color:rgba(158,107,20,.45);
+    backdrop-filter:blur(6px);
+  }
+  .hero-num .neg{
+    background:linear-gradient(180deg, #C97A48 0%, #8C3520 100%);
+    -webkit-background-clip:text; background-clip:text;
+  }
+  .hero-num .top{ color:var(--day-rust); }
+  .hero-num .big{ color:var(--day-ink); }
+  .hero-num .small{ color:rgba(31,15,8,.70); }
+
+  .s3-hadith{
+    background:rgba(255,253,244,.96);
+    box-shadow:0 14px 30px -14px rgba(58,36,24,.40);
+  }
+  .s3-hadith .de b{ color:var(--emerald-deep); }
+  .s3-hadith .src{ color:var(--day-rust); }
+
+  /* === Slide 4 === */
+  .s4-eyebrow{ color:var(--day-gold); }
+  .s4-eyebrow::before{ background:var(--day-gold); }
+  .s4-title{ color:var(--day-ink); text-shadow:0 1px 2px rgba(255,253,244,.5); }
+  .s4-title .em{ color:var(--day-gold); }
+  .s4-sub{ color:rgba(31,15,8,.78); }
+
+  .plan-item{
+    background:rgba(255,253,244,.90);
+    border-color:rgba(31,15,8,.10);
+    border-left-color:var(--day-gold);
+    color:var(--day-ink);
+    box-shadow:0 8px 18px -10px rgba(58,36,24,.40);
+    backdrop-filter:blur(6px);
+  }
+  .plan-item:hover{
+    background:rgba(255,253,244,.98);
+    border-left-color:var(--gold);
+  }
+  .plan-item .time{
+    color:var(--day-rust);
+    border-right-color:rgba(158,107,20,.35);
+  }
+  .plan-item .time .lbl{ color:rgba(158,107,20,.85); }
+  .plan-item .check{
+    background:rgba(255,253,244,.7);
+    border-color:rgba(31,15,8,.35);
+  }
+  .plan-item .ttl{ color:var(--day-ink); }
+  .plan-item .hint{ color:rgba(31,15,8,.62); }
+  .plan-item.done{
+    background:linear-gradient(90deg, rgba(40,160,110,.22), rgba(255,253,244,.55));
+    border-left-color:var(--emerald-bright);
+  }
+  .plan-item.done .time{ color:var(--emerald-deep); border-right-color:rgba(40,160,110,.40); }
+  .plan-item.done .time .lbl{ color:rgba(14,61,42,.7); }
+  .plan-item.done .ttl{ color:var(--emerald-deep); text-decoration-color:rgba(14,61,42,.5); }
+
+  .plan-foot{
+    background:rgba(255,253,244,.70);
+    border-color:rgba(158,107,20,.55);
+    color:var(--day-ink);
+  }
+  .plan-foot b{ color:var(--day-gold); }
+
+  /* === Slide 5 === */
+  .s5-eyebrow{ color:var(--day-gold); }
+  .s5-eyebrow::before{ background:var(--day-gold); }
+  .s5-title{ color:var(--day-ink); text-shadow:0 1px 2px rgba(255,253,244,.5); }
+  .s5-title .em{ color:var(--day-gold); }
+  .s5-lede{ color:rgba(31,15,8,.78); }
+  .s5-lede b{ color:var(--day-ink); }
+  .s5-lede i{ color:var(--day-gold); }
+
+  .action{
+    background:rgba(255,253,244,.96);
+    backdrop-filter:blur(2px);
+  }
+  .action .step{ color:var(--day-gold); }
+  .action .lbl{ color:var(--day-rust); }
+  .action .arrow{
+    background:var(--day-ink);
+    color:#F1C46A;
+  }
+
+  .reward-stamp{
+    background:linear-gradient(135deg, rgba(27,107,74,.92), rgba(14,61,42,.96));
+    border-color:rgba(232,160,32,.60);
+  }
+
+  /* Controls / helper sit on light bg now */
+  .helper{ color:rgba(31,15,8,.55); }
+  .helper kbd{
+    background:rgba(31,15,8,.08);
+    border-color:rgba(31,15,8,.15);
+    color:var(--day-ink);
+  }
+  .dot-btn{ background:rgba(31,15,8,.25); }
+  .dot-btn.active{ background:var(--day-gold); }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="sky-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2F5C8A"/>
+      <stop offset="22%" stop-color="#4C7FB0"/>
+      <stop offset="48%" stop-color="#7DA8D0"/>
+      <stop offset="72%" stop-color="#B8D4E4"/>
+      <stop offset="88%" stop-color="#E8D8B8"/>
+      <stop offset="100%" stop-color="#F0E0BC"/>
+    </linearGradient>
+    <radialGradient id="sun-haze" cx="0.78" cy="0.18" r="0.35">
+      <stop offset="0%" stop-color="#FFFDF4" stop-opacity=".75"/>
+      <stop offset="40%" stop-color="#FFE6A8" stop-opacity=".30"/>
+      <stop offset="100%" stop-color="#FFE6A8" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="mt-body" x1="0" y1="0" x2="0.35" y2="1">
+      <stop offset="0%" stop-color="#A87854"/>
+      <stop offset="55%" stop-color="#7A5034"/>
+      <stop offset="100%" stop-color="#4A2D18"/>
+    </linearGradient>
+    <linearGradient id="mt-rim" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#F0DDB8" stop-opacity="0.85"/>
+      <stop offset="45%" stop-color="#D9B878" stop-opacity="0.40"/>
+      <stop offset="100%" stop-color="#4A2D18" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="plain-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E8D2A4"/>
+      <stop offset="50%" stop-color="#D9B878"/>
+      <stop offset="100%" stop-color="#A8814C"/>
+    </linearGradient>
+    <radialGradient id="pillar-glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#FFFDF4" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#FFFDF4" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="sun-disc" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#FFFDF4"/>
+      <stop offset="50%" stop-color="#FFF1CC"/>
+      <stop offset="100%" stop-color="#FFE6A8" stop-opacity="0"/>
+    </radialGradient>
+
+    <symbol id="arafat" viewBox="0 0 540 675" preserveAspectRatio="xMidYMid slice">
+      <!-- Sky -->
+      <rect width="540" height="675" fill="url(#sky-grad)"/>
+
+      <!-- Sun glow upper-right -->
+      <ellipse cx="430" cy="115" rx="170" ry="170" fill="url(#sun-haze)"/>
+      <circle cx="430" cy="115" r="32" fill="url(#sun-disc)"/>
+      <circle cx="430" cy="115" r="20" fill="#FFFDF4" opacity="0.92"/>
+
+      <!-- Subtle cirrus clouds -->
+      <g fill="#FFFDF4">
+        <ellipse cx="120" cy="160" rx="65" ry="5" opacity="0.65"/>
+        <ellipse cx="155" cy="155" rx="40" ry="3" opacity="0.55"/>
+        <ellipse cx="320" cy="240" rx="75" ry="4" opacity="0.55"/>
+        <ellipse cx="80" cy="260" rx="50" ry="3" opacity="0.45"/>
+        <ellipse cx="240" cy="180" rx="35" ry="2.5" opacity="0.50"/>
+        <ellipse cx="450" cy="280" rx="55" ry="3" opacity="0.42"/>
+      </g>
+
+      <!-- Bird specks -->
+      <g fill="#1F1208" opacity="0.55">
+        <path d="M 75 195 q 3 -3 6 0 q 3 -3 6 0" stroke="#1F1208" stroke-width="1" fill="none"/>
+        <path d="M 95 205 q 2.5 -2.5 5 0 q 2.5 -2.5 5 0" stroke="#1F1208" stroke-width="0.9" fill="none"/>
+      </g>
+
+      <!-- Heat haze at horizon -->
+      <ellipse cx="270" cy="490" rx="500" ry="50" fill="#F0E0BC" opacity="0.55"/>
+
+      <!-- Far distant ridges (cool blue, atmospheric perspective) -->
+      <path d="M 0 465 L 50 455 L 100 463 L 160 450 L 220 460 L 280 445 L 340 457 L 400 447 L 460 460 L 540 450 L 540 495 L 0 495 Z"
+            fill="#8FA8C4" opacity="0.65"/>
+
+      <!-- Mid mountain layer (warm tan, slightly hazy) -->
+      <path d="M 0 505 L 45 490 L 95 503 L 155 483 L 210 497 L 270 477 L 330 493 L 390 480 L 450 495 L 540 485 L 540 545 L 0 545 Z"
+            fill="#A88E68" opacity="0.78"/>
+
+      <!-- Mid-back ridge near base of hero -->
+      <path d="M 0 555 L 60 540 L 140 553 L 230 535 L 320 548 L 410 533 L 500 548 L 540 540 L 540 590 L 0 590 Z"
+            fill="#8C6B3F" opacity="0.85"/>
+
+      <!-- Glow behind pillar -->
+      <ellipse cx="286" cy="375" rx="55" ry="55" fill="url(#pillar-glow)"/>
+
+      <!-- HERO Mount Arafat -->
+      <g>
+        <path d="M 30 625
+                 L 75 605
+                 L 110 580
+                 L 140 555
+                 L 168 525
+                 L 192 495
+                 L 213 465
+                 L 232 440
+                 L 250 418
+                 L 265 405
+                 L 275 397
+                 L 282 392
+                 L 286 390
+                 L 290 392
+                 L 295 397
+                 L 304 408
+                 L 316 425
+                 L 332 448
+                 L 350 475
+                 L 372 505
+                 L 396 535
+                 L 422 562
+                 L 452 588
+                 L 485 610
+                 L 515 625
+                 L 515 650
+                 L 30 650 Z"
+              fill="url(#mt-body)"/>
+
+        <!-- Sunlit rim on right (sun from upper right) -->
+        <path d="M 286 390 L 290 392 L 295 397 L 304 408 L 316 425 L 332 448 L 350 475 L 372 505 L 396 535 L 422 562 L 452 588 L 485 610 L 515 625
+                 L 480 622 L 445 595 L 415 565 L 388 532 L 365 502 L 345 472 L 325 442 L 308 418 L 295 402
+                 Z"
+              fill="url(#mt-rim)" opacity="0.8" transform="scale(-1,1) translate(-540,0)"/>
+
+        <!-- Sunlit highlights (catching light) -->
+        <path d="M 286 390 L 290 392 L 295 397 L 304 408 L 316 425 L 332 448 L 350 475 L 372 505 L 396 535 L 422 562 L 452 588 L 485 610 L 515 625
+                 L 510 645 L 480 622 L 445 595 L 415 565 L 388 532 L 365 502 L 345 472 L 325 442 L 308 418 L 295 402
+                 Z"
+              fill="#C9A876" opacity="0.45"/>
+
+        <!-- Shadow side (left in light, but shading) -->
+        <path d="M 30 625 L 75 605 L 110 580 L 140 555 L 168 525 L 192 495 L 213 465 L 232 440 L 250 418 L 265 405 L 275 397
+                 L 270 415 L 258 440 L 240 470 L 220 500 L 198 530 L 175 555 L 145 580 L 105 605 L 65 625
+                 Z"
+              fill="#3A2018" opacity="0.45"/>
+
+        <!-- Rocky details -->
+        <g fill="#2A1810" opacity="0.55">
+          <ellipse cx="215" cy="490" rx="7" ry="3"/>
+          <ellipse cx="172" cy="540" rx="8" ry="3"/>
+          <ellipse cx="295" cy="445" rx="5" ry="3"/>
+          <ellipse cx="125" cy="585" rx="7" ry="3"/>
+          <ellipse cx="355" cy="495" rx="6" ry="3"/>
+          <ellipse cx="405" cy="555" rx="7" ry="3"/>
+          <ellipse cx="260" cy="455" rx="5" ry="2.5"/>
+        </g>
+
+        <!-- Pilgrim path -->
+        <path d="M 85 625 Q 130 585 165 545 Q 200 505 230 470 Q 258 438 282 408"
+              stroke="#F0DDB8" stroke-width="1.2" fill="none" opacity="0.55" stroke-dasharray="2,3"/>
+
+        <!-- White Maqam pillar at peak -->
+        <g transform="translate(286, 358)">
+          <ellipse cx="0" cy="36" rx="10" ry="2" fill="#2A1810" opacity="0.45"/>
+          <rect x="-8" y="33" width="16" height="3" fill="#8C6450"/>
+          <rect x="-8" y="32" width="16" height="1.2" fill="#D9C18F"/>
+          <rect x="-4" y="3" width="8" height="30" fill="#FFFDF4"/>
+          <rect x="-4" y="3" width="2" height="30" fill="#E8DCC2"/>
+          <rect x="-5.5" y="0" width="11" height="3" fill="#FFFDF4"/>
+          <polygon points="-4,0 4,0 0,-7" fill="#FFFDF4"/>
+        </g>
+      </g>
+
+      <!-- Sandy plain in foreground -->
+      <path d="M 0 625 Q 200 612 540 625 L 540 675 L 0 675 Z" fill="url(#plain-grad)"/>
+      <path d="M 0 645 Q 270 635 540 645 L 540 675 L 0 675 Z" fill="#A88654" opacity="0.55"/>
+
+      <!-- Sand ripples / dunes -->
+      <g stroke="#8C6B3F" stroke-width="0.8" fill="none" opacity="0.35">
+        <path d="M 30 635 Q 100 632 180 635"/>
+        <path d="M 200 645 Q 280 642 360 645"/>
+        <path d="M 380 638 Q 440 635 510 638"/>
+        <path d="M 60 660 Q 150 657 240 660"/>
+        <path d="M 280 665 Q 360 662 460 665"/>
+      </g>
+
+      <!-- Pilgrim silhouettes (white ihram) -->
+      <g fill="#FFFDF4" opacity="0.85">
+        <ellipse cx="170" cy="630" rx="2" ry="4"/>
+        <ellipse cx="192" cy="632" rx="2" ry="4"/>
+        <ellipse cx="215" cy="630" rx="2" ry="4"/>
+        <ellipse cx="240" cy="634" rx="2" ry="4"/>
+        <ellipse cx="265" cy="632" rx="2" ry="4"/>
+        <ellipse cx="312" cy="633" rx="2" ry="4"/>
+        <ellipse cx="335" cy="635" rx="2" ry="4"/>
+        <ellipse cx="358" cy="632" rx="2" ry="4"/>
+        <ellipse cx="382" cy="634" rx="2" ry="4"/>
+        <ellipse cx="405" cy="633" rx="2" ry="4"/>
+
+        <ellipse cx="130" cy="655" rx="2" ry="4"/>
+        <ellipse cx="158" cy="658" rx="2" ry="4"/>
+        <ellipse cx="188" cy="656" rx="2" ry="4"/>
+        <ellipse cx="220" cy="660" rx="2" ry="4"/>
+        <ellipse cx="252" cy="658" rx="2" ry="4"/>
+        <ellipse cx="285" cy="660" rx="2" ry="4"/>
+        <ellipse cx="318" cy="657" rx="2" ry="4"/>
+        <ellipse cx="350" cy="660" rx="2" ry="4"/>
+        <ellipse cx="382" cy="658" rx="2" ry="4"/>
+        <ellipse cx="412" cy="660" rx="2" ry="4"/>
+        <ellipse cx="440" cy="657" rx="2" ry="4"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="stage">
+  <div class="frame" id="frame">
+    <div class="track" id="track">
+
+      <!-- ===== SLIDE 1: COVER ===== -->
+      <section class="slide s1" data-screen-label="01 Cover · 26 Mai">
+        <svg class="arafat-bg" viewBox="0 0 540 675" preserveAspectRatio="xMidYMid slice"><use href="#arafat"/></svg>
+        <div class="slide-scrim"></div>
+        <span class="ar-wm">يوم</span>
+
+        <div class="pad">
+          <div class="topbar">
+            <span class="brand"><span class="crest"></span> SAKEENA · CALL</span>
+            <span class="handle"><span class="dot"></span>@anas.sakeena</span>
+          </div>
+
+          <span class="s1-alarm">
+            <span class="ico">!</span>
+            <span>Achtung · wichtige Erinnerung</span>
+          </span>
+
+          <div class="s1-hero">
+            <div class="s1-stamp">Yawm Arafah · 1447</div>
+            <div class="s1-big-26">26</div>
+            <div class="s1-monthrow">
+              <span class="rule"></span>
+              <span>Mai · Dienstag</span>
+              <span class="ar">يوم عرفة</span>
+              <span class="rule"></span>
+            </div>
+            <h1 class="s1-title">Der <span class="acc">beste</span><br>Tag des Jahres.</h1>
+            <p class="s1-sub">Trag es dir <b>jetzt</b> ein. Plan dir die Stunden zwischen Asr &amp; Maghrib komplett frei.</p>
+          </div>
+
+          <div class="s1-footer">
+            <div class="s1-window">
+              <span class="ico">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </span>
+              <div class="meta">
+                <span class="lbl">Frei halten</span>
+                <span class="val">Asr → Maghrib</span>
+              </div>
+            </div>
+            <div class="s1-swipe">
+              <span>Warum</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="pagepill">01 · 05</div>
+      </section>
+
+      <!-- ===== SLIDE 2: BESTE DUA ===== -->
+      <section class="slide s2" data-screen-label="02 Beste Dua">
+        <svg class="arafat-bg" viewBox="0 0 540 675" preserveAspectRatio="xMidYMid slice"><use href="#arafat"/></svg>
+        <div class="slide-scrim"></div>
+        <div class="rays"></div>
+        <span class="ar-wm">دعاء</span>
+
+        <div class="pad">
+          <div class="topbar">
+            <span class="brand"><span class="crest"></span> HADITH · 01 · BESTE DUA</span>
+            <span class="handle"><span class="dot"></span>@anas.sakeena</span>
+          </div>
+
+          <span class="s2-eyebrow">Das beste Dua des Jahres</span>
+          <h2 class="s2-title">Heute öffnet<br>sich der <span class="em">Himmel</span>.</h2>
+          <p class="s2-kicker">Allah liebt dieses Bittgebet mehr als jedes andere. <b>Nutze die Stunden vor Maghrib</b> — Liste vorbereiten, Herz öffnen, alles aussprechen.</p>
+
+          <div class="s2-hadith">
+            <div class="lbl">Hadith · Tirmidhi 3585</div>
+            <div class="ar">خَيْرُ الدُّعَاءِ دُعَاءُ يَوْمِ عَرَفَةَ</div>
+            <div class="de">„Das <em>beste Dua</em> ist das Dua am Tag von Arafah …“</div>
+            <div class="src">
+              <span>Sunan at-Tirmidhi · 3585</span>
+              <span class="by">Prophet ﷺ</span>
+            </div>
+          </div>
+
+          <div class="s2-tip">
+            <span class="clk">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 3v6M15 3v6M12 3v9M9 12h6M12 12c0 4 2 6 5 6M12 12c0 4-2 6-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </span>
+            <div class="txt">Pro-Tipp: <b>Schreib dir vorher eine Liste.</b> Dunya · Akhira · Familie · Umma — vergiss nichts.</div>
+          </div>
+        </div>
+
+        <div class="pagepill">02 · 05</div>
+      </section>
+
+      <!-- ===== SLIDE 3: 2 YEARS ===== -->
+      <section class="slide s3" data-screen-label="03 Fasten · 2 Jahre">
+        <svg class="arafat-bg" viewBox="0 0 540 675" preserveAspectRatio="xMidYMid slice"><use href="#arafat"/></svg>
+        <div class="slide-scrim"></div>
+        <span class="ar-wm">صَوم</span>
+
+        <div class="pad">
+          <div class="topbar">
+            <span class="brand"><span class="crest"></span> HADITH · 02 · SÜHNE</span>
+            <span class="handle"><span class="dot"></span>@anas.sakeena</span>
+          </div>
+
+          <span class="s3-eyebrow">Das Fasten von Arafah</span>
+          <h2 class="s3-title">Ein Tag Fasten.<br><span class="em">Zwei Jahre</span> gelöscht.</h2>
+
+          <div class="timeline">
+            <div class="year-block past">
+              <div class="yr-lbl">Vergangen</div>
+              <div class="yr-num">1446</div>
+              <div class="yr-sub">letztes Jahr</div>
+              <div class="strike"></div>
+            </div>
+            <div class="year-pivot">
+              <span class="ar">٩</span>
+              <span class="nm">Arafah</span>
+            </div>
+            <div class="year-block future">
+              <div class="yr-lbl">Kommend</div>
+              <div class="yr-num">1448</div>
+              <div class="yr-sub">nächstes Jahr</div>
+              <div class="strike"></div>
+            </div>
+          </div>
+
+          <div class="hero-num">
+            <span class="neg">−2</span>
+            <div class="meta">
+              <span class="top">Sühne · Kaffaarah</span>
+              <span class="big">Zwei volle Jahre<br>an Sünden gesühnt.</span>
+              <span class="small">…falls du an diesem Tag fasten kannst.</span>
+            </div>
+          </div>
+
+          <div class="s3-hadith">
+            <div class="ar">صِيَامُ يَوْمِ عَرَفَةَ أَحْتَسِبُ عَلَى اللَّهِ أَنْ يُكَفِّرَ السَّنَةَ الَّتِي قَبْلَهُ وَالسَّنَةَ الَّتِي بَعْدَهُ</div>
+            <div class="de">„Das Fasten am Tag von Arafah · <b>ich erhoffe von Allah</b>, dass es das vergangene und das kommende Jahr sühnt.“</div>
+            <div class="src">Prophet ﷺ · Sahih Muslim 1162</div>
+          </div>
+        </div>
+
+        <div class="pagepill">03 · 05</div>
+      </section>
+
+      <!-- ===== SLIDE 4: ACTION PLAN ===== -->
+      <section class="slide s4" data-screen-label="04 Aktionsplan">
+        <svg class="arafat-bg" viewBox="0 0 540 675" preserveAspectRatio="xMidYMid slice"><use href="#arafat"/></svg>
+        <div class="slide-scrim"></div>
+        <span class="ar-wm">عمل</span>
+
+        <div class="pad">
+          <div class="topbar">
+            <span class="brand"><span class="crest"></span> PLAN · 26.05 · DIENSTAG</span>
+            <span class="handle"><span class="dot"></span>@anas.sakeena</span>
+          </div>
+
+          <span class="s4-eyebrow">So nutzt du den Tag</span>
+          <h2 class="s4-title">Nicht lesen.<br><span class="em">Machen.</span></h2>
+          <p class="s4-sub">Vier Schritte. Klick an, was du dir vornimmst — und mach Screenshot in deine Erinnerungen.</p>
+
+          <div class="plan">
+            <button class="plan-item" type="button">
+              <span class="time"><span class="lbl">Heute</span>JETZT</span>
+              <span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-11" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <div class="meta">
+                <span class="ttl">Frei nehmen · Kalender blocken</span>
+                <span class="hint">Keine Termine zwischen Asr &amp; Maghrib</span>
+              </div>
+            </button>
+
+            <button class="plan-item" type="button">
+              <span class="time"><span class="lbl">Vor Sonne</span>FAJR</span>
+              <span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-11" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <div class="meta">
+                <span class="ttl">Suhoor &amp; Niyyah zum Fasten</span>
+                <span class="hint">Sühne für zwei Jahre · falls möglich</span>
+              </div>
+            </button>
+
+            <button class="plan-item" type="button">
+              <span class="time"><span class="lbl">Asr</span>~17:00</span>
+              <span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-11" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <div class="meta">
+                <span class="ttl">Moschee · Brüder · Dhikr</span>
+                <span class="hint">Gemeinsam stark, sich gegenseitig motivieren</span>
+              </div>
+            </button>
+
+            <button class="plan-item" type="button">
+              <span class="time"><span class="lbl">→ Maghrib</span>FOKUS</span>
+              <span class="check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-11" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <div class="meta">
+                <span class="ttl">Dua · Reue · Handy aus</span>
+                <span class="hint">Liste vorbereiten · Tränen erlaubt</span>
+              </div>
+            </button>
+          </div>
+
+          <div class="plan-foot">// SCREENSHOT &amp; PIN IN ERINNERUNGEN · <b>BISMILLAH</b></div>
+        </div>
+
+        <div class="pagepill">04 · 05</div>
+      </section>
+
+      <!-- ===== SLIDE 5: CTA ===== -->
+      <section class="slide s5" data-screen-label="05 CTA · Teilen">
+        <svg class="arafat-bg" viewBox="0 0 540 675" preserveAspectRatio="xMidYMid slice"><use href="#arafat"/></svg>
+        <div class="slide-scrim"></div>
+        <span class="ar-wm">شارك</span>
+
+        <div class="pad">
+          <div class="topbar">
+            <span class="brand"><span class="crest"></span> TEILEN · LOHN × ∞</span>
+            <span class="handle"><span class="dot"></span>@anas.sakeena</span>
+          </div>
+
+          <span class="s5-eyebrow">Drei Klicks · ein Lohn</span>
+          <h2 class="s5-title">Teile.<br>Erhalte <span class="em">denselben</span> Lohn.</h2>
+          <p class="s5-lede">Wenn jemand wegen <b>deiner Erinnerung</b> frei nimmt oder fastet — kriegst du <b>die gleiche Belohnung</b>. <i>Inschallah.</i></p>
+
+          <div class="actions">
+            <div class="action save">
+              <span class="ico">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 3h12v18l-6-4-6 4V3z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+              </span>
+              <span class="step">01</span>
+              <div class="meta">
+                <span class="lbl">Speichern</span>
+                <span class="ttl">Damit du es nicht vergisst</span>
+              </div>
+              <span class="arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </div>
+            <div class="action share">
+              <span class="ico">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 11l18-8-8 18-2-8-8-2z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+              </span>
+              <span class="step">02</span>
+              <div class="meta">
+                <span class="lbl">Teilen</span>
+                <span class="ttl">In deine Story &amp; an Brüder</span>
+              </div>
+              <span class="arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </div>
+            <div class="action comment">
+              <span class="ico">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v12H8l-4 4V5z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+              </span>
+              <span class="step">03</span>
+              <div class="meta">
+                <span class="lbl">Kommentieren</span>
+                <span class="ttl">Markier deinen Moschee-Bruder</span>
+              </div>
+              <span class="arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </div>
+          </div>
+
+          <div class="reward-stamp">
+            <span class="star">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2l2.6 6.1L21 9l-5 4.4L17.5 21 12 17.6 6.5 21 8 13.4 3 9l6.4-.9L12 2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+            </span>
+            <div class="txt"><b>Hadith:</b> Wer zum Guten leitet — dem ist der Lohn <b>wie dem, der es tut</b>. <i>—</i></div>
+          </div>
+        </div>
+
+        <div class="pagepill">05 · 05</div>
+      </section>
+
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="navbtn" id="prev" aria-label="Zurück">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="dots" id="dots"></div>
+    <button class="navbtn" id="next" aria-label="Weiter">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+
+  <div class="helper">
+    Navigation: <kbd>←</kbd> <kbd>→</kbd> &nbsp;·&nbsp; Klick auf Dots &nbsp;·&nbsp; Wischen &nbsp;·&nbsp; Slide 4: Klick zum Abhaken
+  </div>
+</div>
+
+<script>
+  const TOTAL = 5;
+  let idx = 0;
+  const track = document.getElementById('track');
+  const dotsEl = document.getElementById('dots');
+  const prevBtn = document.getElementById('prev');
+  const nextBtn = document.getElementById('next');
+  const frame = document.getElementById('frame');
+
+  for(let i=0;i<TOTAL;i++){
+    const b = document.createElement('button');
+    b.className = 'dot-btn' + (i===0?' active':'');
+    b.setAttribute('aria-label','Slide '+(i+1));
+    b.addEventListener('click', ()=>go(i));
+    dotsEl.appendChild(b);
+  }
+
+  function go(n){
+    idx = Math.max(0, Math.min(TOTAL-1, n));
+    track.style.transform = `translateX(${-idx*540}px)`;
+    [...dotsEl.children].forEach((d,i)=>d.classList.toggle('active', i===idx));
+    prevBtn.disabled = idx===0;
+    nextBtn.disabled = idx===TOTAL-1;
+    try { window.parent.postMessage({slideIndexChanged: idx}, '*'); } catch(e){}
+  }
+  go(0);
+
+  prevBtn.addEventListener('click', ()=>go(idx-1));
+  nextBtn.addEventListener('click', ()=>go(idx+1));
+
+  window.addEventListener('keydown', e=>{
+    if(e.key==='ArrowRight'){ e.preventDefault(); go(idx+1); }
+    if(e.key==='ArrowLeft'){ e.preventDefault(); go(idx-1); }
+  });
+
+  let touchX=null;
+  frame.addEventListener('touchstart', e=>{ touchX = e.touches[0].clientX; }, {passive:true});
+  frame.addEventListener('touchend', e=>{
+    if(touchX===null) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    if(Math.abs(dx) > 40){ go(idx + (dx<0?1:-1)); }
+    touchX=null;
+  });
+
+  let dragX=null;
+  frame.addEventListener('mousedown', e=>{ dragX = e.clientX; });
+  window.addEventListener('mouseup', e=>{
+    if(dragX===null) return;
+    const dx = e.clientX - dragX;
+    if(Math.abs(dx) > 60){ go(idx + (dx<0?1:-1)); }
+    dragX=null;
+  });
+
+  document.querySelectorAll('.plan-item').forEach(btn=>{
+    btn.addEventListener('click', e=>{
+      e.stopPropagation();
+      btn.classList.toggle('done');
+    });
+  });
+</script>
+
+</body>
+</html>
