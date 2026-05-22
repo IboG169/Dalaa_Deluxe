@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;0,9..144,900;1,9..144,800&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;0,9..144,900;1,9..144,800&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --ink:#0B0814;
@@ -142,11 +142,14 @@
   }
 
   /* The ﷺ ligature (U+FDFA) needs an Arabic-aware font.
-     Fraunces/Inter fall back to a low-quality system glyph. */
+     Fraunces/Inter fall back to a low-quality system glyph.
+     Noto Naskh Arabic renders the slim, modern variant similar
+     to Apple's system Arabic — closer to the browser preview. */
   .sb{
-    font-family:"Amiri",serif;
+    font-family:"Noto Naskh Arabic","Amiri",serif;
     font-style:normal;
     font-weight:700;
+    text-rendering:geometricPrecision;
   }
 
   /* ============= SLIDE 1: COVER ============= */
