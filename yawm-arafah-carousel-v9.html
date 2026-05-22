@@ -533,10 +533,10 @@
   }
   .s2b-eyebrow::before{ content:""; width:22px; height:1px; background:var(--gold); }
   .s2b-title{
-    margin:6px 0 4px;
+    margin:6px 0 3px;
     font-family:"Fraunces",serif;
     font-weight:900;
-    font-size:34px;
+    font-size:30px;
     line-height:1.0;
     letter-spacing:-.024em;
     color:#FFFDF4;
@@ -545,15 +545,15 @@
   }
   .s2b-title .em{ font-style:italic; color:var(--gold-soft); }
   .s2b-lede{
-    font-size:11.5px; color:var(--gold-pale); line-height:1.5;
-    margin:0 0 10px; font-weight:500; max-width:430px;
+    font-size:11px; color:var(--gold-pale); line-height:1.45;
+    margin:0 0 8px; font-weight:500; max-width:430px;
   }
   .s2b-lede b{ color:#FFFDF4; font-weight:700 }
   .dua-card{
     background:rgba(255,253,244,.97);
     border:1px solid rgba(232,160,32,.45);
-    border-radius:18px;
-    padding:16px 20px 12px;
+    border-radius:16px;
+    padding:14px 18px 10px;
     color:var(--ink);
     position:relative;
     overflow:hidden;
@@ -565,10 +565,24 @@
   }
   .dua-card .ar{
     font-family:"Amiri",serif; direction:rtl; text-align:center;
-    font-size:17px; line-height:1.9;
+    font-size:23px; line-height:2;
     color:var(--emerald-deep); font-weight:700;
     padding:2px 0 6px;
   }
+  .dua-card .de{
+    margin-top:8px;
+    padding-top:10px;
+    border-top:1px dashed rgba(158,107,20,.40);
+    font-size:9.5px; line-height:1.4;
+    color:var(--ink); font-weight:500;
+    text-align:left;
+    text-wrap:pretty;
+  }
+  .dua-card .de p{
+    margin:0 0 3px;
+  }
+  .dua-card .de p:last-child{ margin-bottom:0; }
+  .dua-card .de b{ color:var(--emerald-deep); font-weight:700 }
   .dua-card .foot{
     margin-top:8px;
     padding-top:8px;
@@ -578,12 +592,12 @@
   }
   .dua-card .foot .note{
     font-family:"Fraunces",serif; font-style:italic;
-    font-size:10.5px; line-height:1.35;
+    font-size:10px; line-height:1.3;
     color:#5C4A33; font-weight:500;
     flex:1;
   }
   .dua-card .foot .src{
-    font-size:10px; letter-spacing:.22em; text-transform:uppercase;
+    font-size:9.5px; letter-spacing:.22em; text-transform:uppercase;
     color:var(--rust); font-weight:800;
     text-align:right;
     flex-shrink:0;
@@ -1359,12 +1373,18 @@
             <span class="handle"><span class="dot"></span>@anas.sakeena</span>
           </div>
 
-          <span class="s2b-eyebrow">Von ʿAlī ibn Abī Ṭālib · raḍiya Allāhu ʿanhu</span>
-          <h2 class="s2b-title">Das <span class="em">häufigste</span> Bittgebet<br>am Abend von Arafah.</h2>
-          <p class="s2b-lede">Überliefert von Chalīfa ibn Ḥusayn. Das Bittgebet, das der Gesandte Allahs ﷺ <b>am Abend von Arafah am meisten</b> wiederholt hat.</p>
+          <span class="s2b-eyebrow">ʿAlī ibn Abī Ṭālib · raḍiya Allāhu ʿanhu</span>
+          <h2 class="s2b-title">Ein <span class="em">Bittgebet</span><br>vom Propheten ﷺ.</h2>
+          <p class="s2b-lede">Überliefert von Chalīfa ibn Ḥusayn — ein Bittgebet, das der Gesandte Allahs ﷺ <b>am Abend von Arafah</b> sprach.</p>
 
           <div class="dua-card">
-            <div class="ar">اَللَّهُمَّ لَكَ الْحَمْدُ كَالَّذِي نَقُولُ، وَخَيْرًا مِمَّا نَقُولُ<br>اَللَّهُمَّ لَكَ صَلَاتِي وَنُسُكِي وَمَحْيَايَ وَمَمَاتِي<br>وَإِلَيْكَ مَآبِي، وَلَكَ رَبِّ تُرَاثِي<br>اَللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ عَذَابِ الْقَبْرِ<br>وَوَسْوَسَةِ الصَّدْرِ، وَشَتَاتِ الْأَمْرِ<br>اَللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ شَرِّ مَا تَجِيءُ بِهِ الرِّيحُ</div>
+            <div class="ar">اَللَّهُمَّ لَكَ الْحَمْدُ كَالَّذِي نَقُولُ، وَخَيْرًا مِمَّا نَقُولُ<br>اَللَّهُمَّ لَكَ صَلَاتِي وَنُسُكِي وَمَحْيَايَ وَمَمَاتِي<br>وَإِلَيْكَ مَآبِي، وَلَكَ رَبِّ تُرَاثِي<br>اَللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ عَذَابِ الْقَبْرِ، وَوَسْوَسَةِ الصَّدْرِ، وَشَتَاتِ الْأَمْرِ<br>اَللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ شَرِّ مَا تَجِيءُ بِهِ الرِّيحُ</div>
+            <div class="de">
+              <p>„<b>O Allah</b>, Dir gebührt aller Lob — so wie wir es sagen, und sogar besser, als wir es sagen.</p>
+              <p><b>O Allah</b>, Dir gehört mein Gebet, mein Opfer, mein Leben und mein Tod. Zu Dir gehe ich, und für Dich handle ich. Mein Herr, mein Erbe ist bei Dir.</p>
+              <p><b>O Allah</b>, ich suche Zuflucht bei Dir vor der Strafe des Grabes, vor der Einflüsterung der Brust, vor der Zerstreuung der Angelegenheiten.</p>
+              <p><b>O Allah</b>, ich suche Zuflucht bei Dir vor dem Übel, das der Wind bringt.“</p>
+            </div>
             <div class="foot">
               <div class="note">„Dieser Hadith ist gharīb. Seine Überlieferungskette ist nicht stark.“</div>
               <div class="src">Sunan at-<br>Tirmidhī</div>
@@ -1476,7 +1496,7 @@
               <span class="time"><span class="lbl">Asr</span>~17:00</span>
               <span class="check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5 9-11" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
               <div class="meta">
-                <span class="ttl">Moschee · Brüder · Dhikr</span>
+                <span class="ttl">Moschee · Geschwister · Dhikr</span>
                 <span class="hint">Gemeinsam stark · sich gegenseitig motivieren</span>
               </div>
             </button>
