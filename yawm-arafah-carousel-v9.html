@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8" />
-<title>Yawm Arafah · Editorial Carousel · 6 Slides</title>
+<title>Yawm Arafah · Editorial Carousel · 7 Slides</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -60,7 +60,7 @@
       inset 0 0 0 1px rgba(255,253,247,.08);
   }
   .track{
-    width:3240px; height:675px;
+    width:3780px; height:675px;
     display:flex;
     transition: transform .6s cubic-bezier(.22,1,.36,1);
     will-change: transform;
@@ -510,6 +510,84 @@
   }
   .dhikr-cta .txt{ font-size:12px; line-height:1.4; font-weight:500 }
   .dhikr-cta .txt b{ color:#FFFDF4; font-weight:800 }
+
+  /* ============= SLIDE 4 NEW: 2. DUA TEXT ============= */
+  .s2b{ background: transparent; }
+  .s2b .slide-scrim{
+    background:
+      radial-gradient(900px 500px at 50% -10%, rgba(232,160,32,.28), transparent 50%),
+      linear-gradient(180deg, rgba(11,8,20,.15) 0%, transparent 30%, transparent 60%, rgba(11,8,20,.50) 100%);
+  }
+  .s2b .ar-wm{
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    font-size:340px;
+    color:rgba(232,160,32,.07);
+  }
+  .s2b-eyebrow{
+    margin-top:14px;
+    align-self:flex-start;
+    font-size:10px; letter-spacing:.32em; text-transform:uppercase;
+    color:var(--gold); font-weight:800;
+    display:inline-flex; align-items:center; gap:10px;
+  }
+  .s2b-eyebrow::before{ content:""; width:22px; height:1px; background:var(--gold); }
+  .s2b-title{
+    margin:6px 0 4px;
+    font-family:"Fraunces",serif;
+    font-weight:900;
+    font-size:34px;
+    line-height:1.0;
+    letter-spacing:-.024em;
+    color:#FFFDF4;
+    text-wrap:balance;
+    text-shadow:0 4px 16px rgba(0,0,0,.5);
+  }
+  .s2b-title .em{ font-style:italic; color:var(--gold-soft); }
+  .s2b-lede{
+    font-size:11.5px; color:var(--gold-pale); line-height:1.5;
+    margin:0 0 10px; font-weight:500; max-width:430px;
+  }
+  .s2b-lede b{ color:#FFFDF4; font-weight:700 }
+  .dua-card{
+    background:rgba(255,253,244,.97);
+    border:1px solid rgba(232,160,32,.45);
+    border-radius:18px;
+    padding:16px 20px 12px;
+    color:var(--ink);
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 18px 40px -16px rgba(0,0,0,.55);
+  }
+  .dua-card::before{
+    content:""; position:absolute; top:0; left:0; right:0; height:4px;
+    background:linear-gradient(90deg, var(--gold), var(--emerald) 50%, var(--gold) 100%);
+  }
+  .dua-card .ar{
+    font-family:"Amiri",serif; direction:rtl; text-align:center;
+    font-size:17px; line-height:1.9;
+    color:var(--emerald-deep); font-weight:700;
+    padding:2px 0 6px;
+  }
+  .dua-card .foot{
+    margin-top:8px;
+    padding-top:8px;
+    border-top:1px dashed rgba(158,107,20,.40);
+    display:flex; align-items:center; justify-content:space-between;
+    gap:12px;
+  }
+  .dua-card .foot .note{
+    font-family:"Fraunces",serif; font-style:italic;
+    font-size:10.5px; line-height:1.35;
+    color:#5C4A33; font-weight:500;
+    flex:1;
+  }
+  .dua-card .foot .src{
+    font-size:10px; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--rust); font-weight:800;
+    text-align:right;
+    flex-shrink:0;
+  }
 
   /* ============= SLIDE 4: TWO YEARS (was s3, smaller hero) ============= */
   .s3{ background: transparent; }
@@ -1200,7 +1278,7 @@
           </div>
         </div>
 
-        <div class="pagepill">01 · 06</div>
+        <div class="pagepill">01 · 07</div>
       </section>
 
       <!-- ===== SLIDE 2: BESTE DUA ===== -->
@@ -1229,16 +1307,9 @@
               <span class="by">Tirmidhi 3585</span>
             </div>
           </div>
-
-          <div class="s2-tip">
-            <span class="clk">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 3v6M15 3v6M12 3v9M9 12h6M12 12c0 4 2 6 5 6M12 12c0 4-2 6-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-            </span>
-            <div class="txt">Pro-Tipp: <b>Schreib dir vorher eine Liste.</b> Dunya · Akhira · Familie · Umma. Vergiss nichts.</div>
-          </div>
         </div>
 
-        <div class="pagepill">02 · 06</div>
+        <div class="pagepill">02 · 07</div>
       </section>
 
       <!-- ===== SLIDE 3 NEW: DHIKR ===== -->
@@ -1273,7 +1344,35 @@
           </div>
         </div>
 
-        <div class="pagepill">03 · 06</div>
+        <div class="pagepill">03 · 07</div>
+      </section>
+
+      <!-- ===== SLIDE 4 NEW: 2. DUA TEXT ===== -->
+      <section class="slide s2b" data-screen-label="04 Dua · Wortlaut">
+        <svg class="arafat-bg" viewBox="0 0 540 675" preserveAspectRatio="xMidYMid slice"><use href="#arafat"/></svg>
+        <div class="slide-scrim"></div>
+        <span class="ar-wm">دعاء</span>
+
+        <div class="pad">
+          <div class="topbar">
+            <span class="brand"><span class="crest"></span> 2. DUA · WORTLAUT</span>
+            <span class="handle"><span class="dot"></span>@anas.sakeena</span>
+          </div>
+
+          <span class="s2b-eyebrow">Von ʿAlī ibn Abī Ṭālib · raḍiya Allāhu ʿanhu</span>
+          <h2 class="s2b-title">Das <span class="em">häufigste</span> Bittgebet<br>am Abend von Arafah.</h2>
+          <p class="s2b-lede">Überliefert von Chalīfa ibn Ḥusayn. Das Bittgebet, das der Gesandte Allahs ﷺ <b>am Abend von Arafah am meisten</b> wiederholt hat.</p>
+
+          <div class="dua-card">
+            <div class="ar">اَللَّهُمَّ لَكَ الْحَمْدُ كَالَّذِي نَقُولُ، وَخَيْرًا مِمَّا نَقُولُ<br>اَللَّهُمَّ لَكَ صَلَاتِي وَنُسُكِي وَمَحْيَايَ وَمَمَاتِي<br>وَإِلَيْكَ مَآبِي، وَلَكَ رَبِّ تُرَاثِي<br>اَللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ عَذَابِ الْقَبْرِ<br>وَوَسْوَسَةِ الصَّدْرِ، وَشَتَاتِ الْأَمْرِ<br>اَللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ شَرِّ مَا تَجِيءُ بِهِ الرِّيحُ</div>
+            <div class="foot">
+              <div class="note">„Dieser Hadith ist gharīb. Seine Überlieferungskette ist nicht stark.“</div>
+              <div class="src">Sunan at-<br>Tirmidhī</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pagepill">04 · 07</div>
       </section>
 
       <!-- ===== SLIDE 3: 2 YEARS ===== -->
@@ -1326,7 +1425,7 @@
           </div>
         </div>
 
-        <div class="pagepill">04 · 06</div>
+        <div class="pagepill">05 · 07</div>
       </section>
 
       <!-- ===== SLIDE 4: ACTION PLAN ===== -->
@@ -1395,7 +1494,7 @@
           <div class="plan-foot">// SCREENSHOT &amp; PIN IN ERINNERUNGEN · <b>BISMILLAH</b></div>
         </div>
 
-        <div class="pagepill">05 · 06</div>
+        <div class="pagepill">06 · 07</div>
       </section>
 
       <!-- ===== SLIDE 5: CTA ===== -->
@@ -1433,7 +1532,7 @@
               <span class="step">02</span>
               <div class="meta">
                 <span class="lbl">Teilen</span>
-                <span class="ttl">In deine Story &amp; an Brüder</span>
+                <span class="ttl">In deine Story &amp; an Geschwister</span>
               </div>
               <span class="arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
             </div>
@@ -1444,7 +1543,7 @@
               <span class="step">03</span>
               <div class="meta">
                 <span class="lbl">Kommentieren</span>
-                <span class="ttl">Markier deinen Moschee-Bruder</span>
+                <span class="ttl">Markiere deine Geschwister</span>
               </div>
               <span class="arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
             </div>
@@ -1458,7 +1557,7 @@
           </div>
         </div>
 
-        <div class="pagepill">06 · 06</div>
+        <div class="pagepill">07 · 07</div>
       </section>
 
     </div>
@@ -1480,7 +1579,7 @@
 </div>
 
 <script>
-  const TOTAL = 6;
+  const TOTAL = 7;
   let idx = 0;
   const track = document.getElementById('track');
   const dotsEl = document.getElementById('dots');
